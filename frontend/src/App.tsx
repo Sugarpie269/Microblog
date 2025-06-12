@@ -1,15 +1,17 @@
-import React from 'react'
-import HomePage from './pages/home/HomePage'
-
+//import React from 'react'
+import Header from "./components/Header"
+import Footer from "./components/Footer"
+import { Outlet } from "react-router-dom"
 
 function App() {
-  const user = {username:"Navya"};
-
   return (
     <div>
-      <HomePage user = {user}/>
+      <Header/>
+      <Outlet/>
+      <Footer/>
     </div>
   )
+  
 }
 
 export default App
