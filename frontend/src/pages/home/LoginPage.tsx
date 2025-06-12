@@ -1,13 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useRecoilState } from "recoil";
+import { userAtom } from "../../atoms/user";
 type LoginData = {
     email: string;
 };
 const LoginPage = () => {
+    const [user, setUser] = useRecoilState(userAtom);
+    const [redirectToHome, setRedirectToHome] = useState(false);
     const {register, handleSubmit, formState:{isValid}} = useForm<LoginData>();
     const API_BASE = import.meta.env.VITE_DEV_BASE_URL;
-    const navigate = useNavigate();
     const onSubmit = async (data: LoginData) =>{
         try {
             const res = await fetch(`${API_BASE}/api/login`,{
@@ -21,13 +24,14 @@ const LoginPage = () => {
             // if exists send an opt
                 // OPT good everything okay if not error OPT incorrect
             // if doesn't exist display do they wanna sign up
-
-            if(res.ok) {
+            const userData = await res.json();
+            if(res.ok && userData?.user_id) {
+                setUser(userData)
                 alert("OTP sent");
-                navigate("/home", {state: {user : {username: "Navya"}}});
+                setRedirectToHome(true);
+            }else {
+                alert("Response from server: " + userData.message);
             }
-            const result = await res.json();
-            alert("Response from server: " + result.message);
         } catch(err) {
             console.error(err);
             alert("Login failed");
@@ -35,6 +39,10 @@ const LoginPage = () => {
         }
     };
 
+    if (redirectToHome) {
+        return <Navigate to="/home" replace />;
+    }
+    
     return (
         <div className="flex items-center justify-center min-h-full w-screen flex-col px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">

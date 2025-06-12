@@ -21,4 +21,10 @@ def postLogin(emailRequest: EmailRequest):
 
     print("OTP for " + emailRequest.email + " is = " + otp)
 
-    return {"message" : "OTP sent successfully"}
+    user = {
+        "user_id" : 123,
+        "user_name" : "Navya",
+        "message" : "OTP sent successfully"
+    }
+
+    return user
